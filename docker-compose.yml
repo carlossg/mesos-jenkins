@@ -1,0 +1,72 @@
+# Based on https://github.com/breerly/fig-mesos
+
+# After start Jenkins will be available in localhost:8080
+# The Jenkins URL in the Mesos plugin needs to be set to an IP accessible from new docker containers http://IP:8080
+
+version: '2'
+
+services:
+
+  #
+  # Zookeeper
+  #
+  zookeeper:
+    image: mesoscloud/zookeeper:3.4.6-ubuntu-14.04
+
+  #
+  # Mesos master
+  #
+  # http://mesos.apache.org/documentation/latest/configuration/
+  #
+  mesos:
+    image: mesoscloud/mesos-master:0.28.1-ubuntu-14.04
+    ports:
+      - "5050:5050"
+    environment:
+      MESOS_LOG_DIR: /var/log
+      MESOS_ZK: zk://zookeeper:2181/mesos
+      MESOS_QUORUM: 1
+
+  #
+  # Mesos agent
+  #
+  # http://mesos.apache.org/documentation/latest/configuration/
+  #
+  agent:
+    image: mesoscloud/mesos-slave:0.28.1-ubuntu-14.04
+    ports:
+      - "5051:5051"
+    environment:
+      MESOS_MASTER: zk://zookeeper:2181/mesos
+      MESOS_CONTAINERIZERS: "docker,mesos"
+      MESOS_HOSTNAME: localhost
+      MESOS_SWITCH_USER: "false"
+      MESOS_EXECUTOR_REGISTRATION_TIMEOUT: "5mins"
+      MESOS_ISOLATOR: "cgroups/cpu,cgroups/mem"
+      MESOS_PORT: "5051"
+      MESOS_LOG_DIR: /var/log
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /sys/fs/cgroup:/sys/fs/cgroup
+      - /tmp/mesos/slaves:/tmp/mesos/slaves
+
+
+  #
+  # Marathon
+  #
+  marathon:
+    image: mesosphere/marathon:v0.11.1
+    ports:
+      - "8000:8080"
+    command: "--master zk://zookeeper:2181/mesos --zk zk://zookeeper:2181/marathon"
+
+  #
+  # Jenkins with Mesos plugin installed
+  #
+  jenkins:
+    image: csanchez/jenkins-mesos:2.7.1
+    ports:
+      - "8080:8080"
+      - "50000:50000"
+    volumes:
+      - ./jenkins_home:/var/jenkins_home
