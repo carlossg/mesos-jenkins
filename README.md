@@ -13,13 +13,14 @@ as they expose the Docker containers under `localhost` as the Linux version does
 
 All the examples are using `localhost` for a consistent experience.
 
-Tested with Docker for Mac 1.12.0-rc4-beta19 and Docker Compose 1.8.0-rc2
+Tested with Docker for Mac 1.12.0 and Docker Compose 1.8.0
 
 
 After installation pull all the images using `docker-compose pull`
 
-Also pull any images you may want to use as Jenkins build agents, for example
+Also pull any images you may want to use as Jenkins build agents, at least
 
+    docker pull csanchez/java-with-docker-client:8-jdk-1.12.0
     docker pull java:8-jdk
     docker pull golang:1.6
     docker pull maven:3.3.9-jdk-8
