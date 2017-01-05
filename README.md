@@ -16,7 +16,7 @@ All the examples are using `localhost` for a consistent experience.
 Tested with Docker for Mac 1.12.0 and Docker Compose 1.8.0
 
 
-After installation pull all the images using `docker-compose pull`
+After installation pull all the images using `docker-compose pull` and build our custom Jenkins image with `docker-compose build`
 
 Also pull any images you may want to use as Jenkins build agents, at least
 

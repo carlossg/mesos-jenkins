@@ -64,7 +64,8 @@ services:
   # Jenkins with Mesos plugin installed
   #
   jenkins:
-    image: csanchez/jenkins-mesos:2.7.1-mesos-0.28.1
+    build: ./jenkins-mesos
+    # image: csanchez/jenkins-mesos:2.7.1-mesos-0.28.1
     ports:
       - "8080:8080"
       - "50000:50000"
