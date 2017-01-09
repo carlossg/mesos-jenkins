@@ -39,15 +39,18 @@ The following services will be started
 
 Building a Maven project
 
-    node('maven') {
-      stage 'Checkout'
-      git url: 'https://github.com/sonatype/maven-example-en.git'
-
-      stage 'Build'
-      dir('examples/ch-simple/simple') {
-        sh "mvn package"
-      }
+```groovy
+node('maven') {
+  stage('Checkout') {
+    git url: 'https://github.com/sonatype/maven-example-en.git'
+  }
+  stage('Build') {
+    dir('examples/ch-simple/simple') {
+      sh "mvn package"
     }
+  }
+}
+```
 
 # Building with Pipeline using a different Docker image
 
@@ -62,23 +65,28 @@ with volumes `/var/run/docker.sock:/var/run/docker.sock` and `/tmp/jenkins/works
 
 Example building a golang project
 
-    node('docker') {
-        docker.image('golang:1.6').inside {
+```groovy
+node('docker') {
+    docker.image('golang:1.6').inside {
 
-            stage 'Get sources'
-            git url: 'https://github.com/hashicorp/terraform.git', tag: "v0.6.15"
+      stage('Get sources') {
+        git url: 'https://github.com/hashicorp/terraform.git', tag: "v0.6.15"
+      }
 
-            stage 'Build'
-            sh """#!/bin/bash -e
-            mkdir -p /go/src/github.com/hashicorp
-            ln -s `pwd` /go/src/github.com/hashicorp/terraform
-            pushd /go/src/github.com/hashicorp/terraform
-            make core-dev plugin-dev PLUGIN=provider-aws
-            popd
-            cp /go/bin/terraform-provider-aws .
-            """
+      stage('Build') {
+        sh """#!/bin/bash -e
+        mkdir -p /go/src/github.com/hashicorp
+        ln -s `pwd` /go/src/github.com/hashicorp/terraform
+        pushd /go/src/github.com/hashicorp/terraform
+        make core-dev plugin-dev PLUGIN=provider-aws
+        popd
+        cp /go/bin/terraform-provider-aws .
+        """
+      }
 
-            stage 'Archive'
-            archive "terraform-provider-aws"
-        }
+      stage('Archive') {
+        archive "terraform-provider-aws"
+      }
     }
+}
+```
