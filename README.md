@@ -51,6 +51,15 @@ Building a Maven project
 
 # Building with Pipeline using a different Docker image
 
+The build agent image needs Java (for Jenkins JNLP) and the Docker client. For instance `csanchez/java-with-docker-client:8-jdk-1.12.3`
+
+Create a build agent definition `docker`, and use `/tmp/jenkins` as *Remote FS Root Mount*,
+with volumes `/var/run/docker.sock:/var/run/docker.sock` and `/tmp/jenkins/workspace:/tmp/jenkins/workspace`
+
+![](jenkins-mesos-docker-agent-1.png)
+
+![](jenkins-mesos-docker-agent-2.png)
+
 Example building a golang project
 
     node('docker') {
