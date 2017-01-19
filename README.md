@@ -67,7 +67,7 @@ Example building a golang project
 
 ```groovy
 node('docker') {
-    docker.image('golang:1.6').inside {
+    docker.image('golang:1.7').inside {
 
       stage('Get sources') {
         git url: 'https://github.com/hashicorp/terraform.git', tag: "v0.6.15"
